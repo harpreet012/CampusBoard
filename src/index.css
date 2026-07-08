@@ -1,0 +1,694 @@
+/* =========================================================
+   CampusBoard — Glassmorphism Design
+   Deep gradient background with floating frosted-glass panels,
+   translucent borders, blur effects, and soft glow accents.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* background gradient stops */
+  --bg-deep: #0a0a1a;
+  --bg-mid: #0f1129;
+
+  /* glass surface */
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-hover: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.18);
+  --glass-blur: 18px;
+
+  /* text */
+  --text: #e8eaf0;
+  --text-soft: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.35);
+
+  /* accent – vivid indigo-violet */
+  --accent: #7c5cfc;
+  --accent-glow: rgba(124, 92, 252, 0.35);
+  --accent-soft: rgba(124, 92, 252, 0.12);
+
+  /* status */
+  --danger: #f04e4e;
+  --danger-glow: rgba(240, 78, 78, 0.25);
+  --success: #34d399;
+  --badge: #facc15;
+
+  /* misc */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   BODY — deep gradient with animated floating blobs
+   ========================================================= */
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* animated gradient blobs behind everything */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+body::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(124, 92, 252, 0.5), transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation: blobDrift1 18s ease-in-out infinite alternate;
+}
+
+body::after {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent 70%);
+  bottom: -15%;
+  right: -10%;
+  animation: blobDrift2 22s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(15vw, 20vh) scale(1.15); }
+  100% { transform: translate(5vw, 40vh) scale(0.95); }
+}
+
+@keyframes blobDrift2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-10vw, -15vh) scale(1.2); }
+  100% { transform: translate(-5vw, -30vh) scale(0.9); }
+}
+
+/* ensure all app content is above the blobs */
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================================
+   GLOBAL RESETS & UTILITIES
+   ========================================================= */
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+
+a:hover {
+  color: #a18aff;
+  text-decoration: none;
+}
+
+/* keyboard focus ring */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.center-text {
+  text-align: center;
+  color: var(--text-soft);
+  margin-top: 3rem;
+}
+
+/* =========================================================
+   GLASS MIXIN PATTERN (applied via classes below)
+   - rgba background
+   - backdrop-filter blur
+   - translucent border
+   - subtle shadow
+   ========================================================= */
+
+/* ---------- layout shell ---------- */
+
+.page-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.page-container h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--text), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* =========================================================
+   NAVBAR — frosted glass bar
+   ========================================================= */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navbar-brand:hover {
+  text-decoration: none;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.navbar-right a {
+  color: var(--text-soft);
+  transition: color 0.2s var(--ease);
+}
+
+.navbar-right a:hover {
+  color: var(--text);
+}
+
+.navbar-right button {
+  background: none;
+  border: none;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  padding: 0;
+  transition: color 0.2s var(--ease);
+}
+
+.navbar-right button:hover {
+  color: var(--text);
+}
+
+/* =========================================================
+   AUTH PAGES — centered glass card
+   ========================================================= */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+
+  /* === GLASS === */
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: fadeSlideUp 0.5s var(--ease) both;
+}
+
+.auth-form h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-form p {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  margin-top: 0.5rem;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   FORM CONTROLS — glass inputs
+   ========================================================= */
+
+input,
+textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease),
+              box-shadow 0.25s var(--ease);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input:disabled {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* =========================================================
+   BUTTONS — glowing accent
+   ========================================================= */
+
+button[type="submit"],
+.notice-form button,
+.profile-form button {
+  background: linear-gradient(135deg, var(--accent), #6246ea);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+              opacity 0.15s var(--ease);
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+button[type="submit"]:hover,
+.notice-form button:hover,
+.profile-form button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 25px var(--accent-glow);
+}
+
+button[type="submit"]:active,
+.notice-form button:active,
+.profile-form button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0;
+  text-shadow: 0 0 12px var(--danger-glow);
+}
+
+.info-text {
+  color: var(--success);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* =========================================================
+   NOTICE FORM — glass panel
+   ========================================================= */
+
+.notice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 2.25rem;
+  padding: 1.25rem;
+  padding-bottom: 1.5rem;
+
+  /* === GLASS === */
+  background: var(--glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================================
+   NOTICE LIST & CARDS — frosted cards
+   ========================================================= */
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notice-card {
+  position: relative;
+
+  /* === GLASS === */
+  background: var(--glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 1.15rem 1.25rem 1rem 1.6rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease),
+              box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+  animation: fadeSlideUp 0.4s var(--ease) both;
+}
+
+.notice-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  background: var(--glass-hover);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* glowing accent dot (replaces the pushpin) */
+.notice-card::before {
+  content: '';
+  position: absolute;
+  top: 1.15rem;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+}
+
+.notice-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.notice-card p {
+  margin: 0 0 0.65rem;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.notice-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notice-meta small {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 0.78rem;
+  padding: 0;
+  transition: color 0.2s var(--ease);
+}
+
+.link-button:hover {
+  color: #ff7171;
+  text-decoration: underline;
+}
+
+/* =========================================================
+   NOTIFICATION BELL — glass dropdown
+   ========================================================= */
+
+.bell-wrapper {
+  position: relative;
+}
+
+.bell-button {
+  background: none;
+  border: none;
+  font-size: 1.05rem;
+  position: relative;
+  padding: 0.15rem 0.25rem;
+  transition: transform 0.2s var(--ease);
+}
+
+.bell-button:hover {
+  transform: scale(1.1);
+}
+
+.bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: var(--badge);
+  color: #0a0a1a;
+  font-size: 0.63rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
+}
+
+.bell-dropdown {
+  position: absolute;
+  right: 0;
+  top: 140%;
+  width: 280px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 20;
+  animation: fadeSlideUp 0.25s var(--ease) both;
+
+  /* === GLASS === */
+  background: rgba(20, 20, 45, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  padding: 0.5rem;
+}
+
+.bell-dropdown p {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  margin: 0.4rem;
+}
+
+.bell-item {
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s var(--ease);
+  border-radius: var(--radius-sm);
+}
+
+.bell-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bell-item:last-child {
+  border-bottom: none;
+}
+
+.bell-item p {
+  margin: 0 0 0.2rem;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.bell-item small {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* custom scrollbar for bell dropdown */
+.bell-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.bell-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bell-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* =========================================================
+   PROFILE PAGE — glass form
+   ========================================================= */
+
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.avatar-preview {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--glass-border-strong);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.avatar-placeholder {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  text-align: center;
+  border: 2px solid var(--glass-border);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  /* === GLASS === */
+  background: var(--glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-form label {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  margin-top: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.profile-form button {
+  margin-top: 1rem;
+  align-self: flex-start;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .auth-form {
+    padding: 2rem 1.5rem;
+  }
+
+  .bell-dropdown {
+    width: 240px;
+  }
+}
+
+/* respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
